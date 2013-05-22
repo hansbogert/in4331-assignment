@@ -143,7 +143,9 @@ $valid_url_regex = '/.*/';
 // ############################################################################
 
 $url = $_GET['url'];
-
+//$url = urlencode($url);
+//echo $url;
+$url = str_replace(" ","%20", $url);
 if ( !$url ) {
   
   // Passed url not specified.

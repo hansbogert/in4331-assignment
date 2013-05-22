@@ -1,32 +1,3 @@
-<?php/*
-$restEndpoint = "http://localhost:8081/exist/rest/db/movies?_query=//title";
-function getXml($urlQuery)
-{
-  $curl = curl_init();
-  curl_setopt($curl, CURL_OPT_URL, $urlQuery);
-  curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-  
-  return curl_exec($curl);
-}
-
-function needsFilter(){
-  $filters = array();
-  $filters[] = 'title';
-  
-  foreach ($filters as $filter )
-    {
-      if(!empty($_GET[$filter]))
-	{
-	  return true;
-	}
-    }
-  }
-
-  if(needsFilter())
-    {
-      
-    }*/
-?>
 <!DOCTYPE html>
 <html>
   <head>
@@ -35,14 +6,20 @@ function needsFilter(){
     <script src="xml.js" type="text/javascript"> </script>
   </head>
   <body>
-    <form method="GET" id="theForm" action="">
+    <form id="form">
       <input type="text" name="title" value="title" id="title"/><br/>
-      <select>
+      <select name="genre" id="genre">
 	<option value="">Genre!</option>
-      </select>
-      <input type="submit" name="send" value="search" />
+	<option value="Action">Action</option>
+	<option value="Crime">Crime</option>
+	<option value="Drama">Drama</option>
+	<option value="Western">Western</option>
+      </select><br/>
+      <input type="text" name="year" value="" placeholder="year" id="year" />
+      <input type="button" value="search" onclick="updateList()">
     </form>
     <div id="results">
+      
     </div>
   </body>
 </html>
