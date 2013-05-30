@@ -1,6 +1,13 @@
+\documentclass{article}
+\usepackage{a4wide}
+\title{Web Data Management, assignment 1}
+\author{Hans van de Bogert \and Bastiaan van Graafeiland\\1399101}
+\begin{document}
+\maketitle
+
 \section{Express queries on both documents}
-We will have to device queries for both the movies data-set as well as
-the movies_refs data-set. The latter has actors and movies seperated.
+We will have to device queries for both the movies dataset as well as
+the movies\_refs dataset. The latter has actors and movies seperated.
 \subsection{All title elements}
 For both the data sets, titles can be retrieved by:
 $//title$
@@ -20,17 +27,17 @@ No specific format is demanded, we will result the director-node.
 $/movies/movie[title/text()=''Heat'']/director$
 
 This will only work for the \emph{movies.xml} file, we need to
-reference the id we get in the case of the \emph{movies_refs.xml} file.
-$/movies/artist[@id=string(doc('/db/movies/movies_refs.xml')/movies/movie[title/text()="Heat"]/director/@id)]$
+reference the id we get in the case of the \emph{movies\_refs.xml} file.
+$/movies/artist[@id=string(doc('/db/movies/movies\_refs.xml')/movies/movie[title/text()="Heat"]/director/@id)]$
 \subsection{Title of the movies featuring Kirsten Dunst}
 \subsubsection{movies.xml}
-$/movies/movie[actor/first_name=''Kirsten''][actor/last_name=''Dunst'']/title/text()$
-\subsubsection{movies_refs.xml}
+$/movies/movie[actor/first_name=''Kirsten''][actor/last\_name=''Dunst'']/title/text()$
+\subsubsection{movies\_refs.xml}
 $/movies/movie[
         actor/@id = string(/movies/artist[
-            last_name='Dunst'
+            last\_name='Dunst'
         ][
-            first_name='Kirsten'
+            first\_name='Kirsten'
         ]
         /@id)
     ]
@@ -56,7 +63,7 @@ $
 \subsection{What was the role of Clint Eastwood in Unforgiven?}
 \subsubsection{movies.xml}
 $/movies/movie[title/text() = "Unforgiven"]/actor[first_name = "Clint" and last_name = "Eastwood"]/role$
-\subsubsection{movies_refs.xml}
+\subsubsection{movies\_refs.xml}
 $string(/movies/movie[title/text() = ``Unforgiven'']/actor[
         @id = 
             string(/movies/artist[first_name= ``Clint'' and last_name = ``Eastwood'']/@id)
@@ -101,8 +108,8 @@ $/movies/movie[count(actor) = 3]$
 
 \section{XQuery assignment}
 For all queries these lines are implicit:
-$let \$ms:=doc("movies-query/movies_alone.xml"),
-\$as:=doc("movies-query/artists_alone.xml")
+$let \$ms:=doc("movies-query/movies\_alone.xml"),
+\$as:=doc("movies-query/artists\_alone.xml")
 $
 \subsection{List the movies published after 2002, including their
   title and year}
@@ -116,8 +123,8 @@ return (concat(\$m/title/text(),"",\$m/year/text()))$
   pair enclosed in a “result” element. Here is an example of the
   expected result structure:...}
 $<results>{    
-let \$ms:=doc("movies-query/movies_alone.xml"),                                                                                           
-\$as:=doc("movies-query/artists_alone.xml")
+let \$ms:=doc("movies-query/movies\_alone.xml"),                                                                                           
+\$as:=doc("movies-query/artists\_alone.xml")
 
     for \$role in \$ms/movies/movie/actor/@role
 
@@ -144,13 +151,13 @@ $
   atomic values.}
 The requested format is unclear, we opted for a list of tuples with
 the return type (\$genre, \$corresponding-movie-title )
-$let \$ms:=doc("movies-query/movies_alone.xml"),                                                                                           
-\$as:=doc("movies-query/artists_alone.xml")
+$let \$ms:=doc("movies-query/movies\_alone.xml"),                                                                                           
+\$as:=doc("movies-query/artists\_alone.xml")
 
 for \$g in distinct-values(\$ms//genre)
 return (\$g,\$ms//movie[genre= \$g]/title)$
 
-\subsection{ For each distinct actor’s id in movies_alone.xml, show
+\subsection{ For each distinct actor's id in movies\_alone.xml, show
   the titles of the movies where this actor plays a role. The format
   of the result should be:...}
 
@@ -212,8 +219,8 @@ for \$m in \$ms//movie return
   movie has additional actors. For instance: }
 \begin{lstlisting}
 <results>{
-    let \$ms:=doc("movies-query/movies_alone.xml")
-    , \$as:=doc("movies-query/artists_alone.xml")
+    let \$ms:=doc("movies-query/movies\_alone.xml")
+    , \$as:=doc("movies-query/artists\_alone.xml")
     
     for \$m in \$ms//movie
     return
@@ -248,3 +255,5 @@ return (\$m//title, \$m/year)
 \end{lstlisting}
 
 \section{Project: Getting started}
+
+\end{document}
