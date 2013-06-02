@@ -184,7 +184,7 @@ where $m/director/@id = $a/@id
 return concat($m/title, ": ", $a/last_name, ', ', $a/first_name)
 \end{verbatim}
 
-\subsection{Give the title of each movie, and a nested element $<$actors$>$ giving the list of actors with their role.}
+\subsection{Give the title of each movie, and a nested element \textless{}actors\textgreater giving the list of actors with their role.}
 Again the desired output is very ambiguous and left open for interpretation, we read it as: (1) sequence the titles as elements, in these titles include (nest) an extra element actors which contains elements for the actor's name and role.
 \begin{verbatim}
 for $m in $ms//movie
@@ -243,22 +243,22 @@ return <result>{$m/title, $m/year}</result>
 
 \section{Project: Getting started}
 We have used the \emph{movies.xml} file as backend. To mimic a
-real-life setting, where a person would use a xml-backend from a
-3rd-party in a web application, we've chosen to use javascript as the
-means to retrieve the xml-data. The data-flow is as follows:
+real-life setting, where a person would use an XML-backend from a
+3rd-party in a web application, we've chosen to use Javascript as the
+means to retrieve the XML-data. The dataflow is as follows:
 \begin{enumerate}
-\item the user opens index.php on server '1'
-\item user can choose filters, and thereby triggers xquery calls to
-  server '1' (using javascript)
-\item server '1' then proxies the request to server '2', the
+\item The user opens index.php on server '1'
+\item The user can choose filters, and thereby triggers XQuery calls to
+  server '1' (using Javascript)
+\item Server '1' then proxies the request to server '2', the
   exist-db. (using php -- all this to circumvent the browser
   cross-origin restriction)
-\item server '2' executes the query and gives results as XML
-\item the user receives that XML through the proxy server '1' and then
+\item Server '2' executes the query and returns results as XML
+\item The user receives said XML through the proxy server '1' and then
   translates this to a list of HTML using jQuery.
 \end{enumerate}
 
-The benefit of using javascript is that the results can be fetched
+The benefit of using Javascript is that the results can be fetched
 on-the-fly using the capabilities of modern browsers.
 
 \section{Shakespeare application}
@@ -266,8 +266,8 @@ The assignment was not clear on which collection should be used, there
 were 2 choices: (1) The 3 works of Shakespeare in the samples
 directory actually \emph{shipped} with the eXist-db, or (2) the
 application downloadable by the package manager in eXist-db, we chose
-the former.  Some parts we're reused from the samples directory,
-namely the xsl file.
+the former.  Some parts were re-used from the samples directory,
+namely the XSL file.
 
 The application is built using the application-framework of eXist-db
 much like the Shakespeare application demo, although we've chosen to
@@ -276,19 +276,19 @@ use xslt to do most of the transformations instead of using xquery.
 The following lists depicts the step taken from a request to the
 exist-db by the exist-db to render the page.
 \begin{enumerate}
-\item the user connects to the exist-db which has the application
+\item The user connects to the exist-db which has the application
   installed
   e.g. \url{http://exist-db:8080/exist/apps/shakespeare/index.html}
 \item The controller.xql receives the URL request and routes it
   accordingly - usually to view.xql
-\item the view.xql looks at the original request and finds the
-  appropriate html file, like index.html, view-play.html etc.
+\item The view.xql looks at the original request and finds the
+  appropriate HTML file, like index.html, view-play.html etc.
 \item The view.xql then parses this HTML-snippet to find directives on
   where it should be placed in another template HTML file -- located
   in the templates/ directory of the application.
 \item The combined HTML is then parsed for directives again for calls
   to the app.xql and places the result in the HTML element calling the
-  xquery function.
+  XQuery function.
 \item In our case the app.xql will call a transformation function with
   the appropriate stylesheet and return the output into the HTML view.
 \end{enumerate}

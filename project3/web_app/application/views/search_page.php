@@ -1,14 +1,42 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="http://code.jquery.com/jquery-2.0.0.min.js" type="text/javascript"> </script>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+    <style type="text/css">
+      #container, #results
+      {
+        width: 500px;
+        margin: auto;
+        margin-top: 30px;
+      }
+    </style>
     <title>Music browser</title>
   </head>
   <body>
+    <div id="container">
     <?php echo form_open('results');?>
-      <input type="text" name="metadata" placeholder="metadata" id="metadata"/><br/>
-      <input type="text" name="lyrics" placeholder="lyrics" id="lyrics" /><br/>
-      <input type="submit" value="Search" />
+    <div class="input-append">
+      <input type="search" name="metadata" placeholder="Search metadata" id="metadata"/>
+      <button type="submit" class="btn btn-inverse">Search</button>
+    </div>
     </form>
+    </div>
+    <div id="results">
+    <?php if (isset($results)): ?>
+      <table class="table table-condensed">
+        <thead>
+          <tr>
+            <th>Composer</th>
+            <th>Title</th>
+            <th>PDF</th>
+            <th>MIDI</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php echo $results; ?>
+        </tbody>
+      </table>
+    <?php endif; ?>
+    </div>
   </body>
 </html>

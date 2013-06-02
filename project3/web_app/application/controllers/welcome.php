@@ -25,24 +25,45 @@ class Welcome extends CI_Controller {
 
 	public function results()
 	{
+		$results = '';
 		$keyword = $this->input->post('metadata');
 		if ($keyword) 
 		{
+			// Load search results from Exist
 			$xmlobj = simplexml_load_file("http://localhost:8080/exist/rest/db/music/query.xq?term=".$keyword);
+			// Generate result list
 			foreach ($xmlobj as $entry) 
 			{
-				$split = explode('/', $entry);
-				echo "Result: ".anchor('getsheet/'.$split[3])."<br />";
+				$split = explode('/', $entry->uri);
+				$reference = '<tr><td>';
+				if ($entry->composer != '')
+					$reference .= $entry->composer;
+				else
+				{
+					$filename = explode('.', $split[3]);
+					$reference .= $filename[0];
+				}
+				$reference .= '</td>';
+				if ($entry->title != '')
+					$reference .= '<td>'.$entry->title.'</td>';
+				$results .= $reference.'<td>'.anchor('getsheet/'.$split[3].'/pdf', 'pdf').'</td>';
+				$results .= '<td>'.anchor('getsheet/'.$split[3].'/midi', 'midi').'</td></tr>';
 			}
 		}
+		$this->load->view('search_page', array('results' => $results));
 	}
 
-	public function getsheet($file='')
+	/**
+	 * Retrieve a piece of music from the given XML resource
+	 * @param  string $file name of the XML file
+	 * @param  string $type filetype to return
+	 */
+	public function getsheet($file='', $type='pdf')
 	{
+		// Download XML file if it wasn't already
 		if (!file_exists('music/'.$file) || filesize('music/'.$file) == 0)
 		{
 			$xmlFile = file_get_contents("http://localhost:8080/exist/rest/db/music/".$file);
-			var_dump($xmlFile);
 			if (write_file('music/'.$file, $xmlFile)) {
 				echo 'successfully saved xml';
 			}
@@ -51,6 +72,7 @@ class Welcome extends CI_Controller {
 		$split = explode('.', $file);
 		$fileName = $split[0];
 
+		// Generate .ly, .pdf and .mid files if this wasn't done already
 		if (!file_exists('music/'.$fileName.'.ly'))
 		{
 			exec('musicxml2ly -m -o music/'.$fileName.' -v music/'.$file);
@@ -61,6 +83,16 @@ class Welcome extends CI_Controller {
 		{
 			exec('lilypond -o music -V music/'.$fileName.'.ly');
 			echo 'pdf generated';
+		}
+
+		// Present the requested file type
+		if ($type == 'pdf') 
+		{
+			redirect('music/'.$fileName.'.pdf');
+		}
+		elseif ($type == 'midi')
+		{
+			redirect('music/'.$fileName.'.mid');
 		}
 	}
 }
