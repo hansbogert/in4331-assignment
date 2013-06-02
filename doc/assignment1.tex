@@ -242,6 +242,25 @@ return <result>{$m/title, $m/year}</result>
 \end{verbatim}
 
 \section{Project: Getting started}
+We have used the \emph{movies.xml} file as backend. To mimic a
+real-life setting, where a person would use a xml-backend from a
+3rd-party in a web application, we've chosen to use javascript as the
+retrieve for the xml-data. The data-flow is as follows:
+\begin{enumerate}
+\item the user opens index.php on server '1'
+\item user can choose filters, and thereby triggers xquery calls to
+  server '1' (using javascript)
+\item server '1' then proxies the request to server '2', the
+  exist-db. (using php -- all this to circumvent the browser
+  cross-origin restriction)
+\item server '2' executes the query and gives results as XML
+\item the user receives that XML through the proxy server '1' and then
+  translates this to a list of HTML using jQuery.
+\end{enumerate}
+
+The benefit of using javascript is that the results can be fetched
+on-the-fly using the capabilities of modern browsers.
+
 \section{Shakespeare application}
 The assignment was not clear on which collection should be used, there
 were 2 choices: (1) The 3 works of Shakespeare in the samples
@@ -257,6 +276,9 @@ use xslt to do most of the transformations instead of using xquery.
 The following lists depicts the step taken from a request to the
 exist-db by the exist-db to render the page.
 \begin{enumerate}
+\item the user connects to the exist-db which has the application
+  installed
+  e.g. \url{http://exist-db:8080/exist/apps/shakespeare/index.html}
 \item The controller.xql receives the URL request and routes it
   accordingly - usually to view.xql
 \item the view.xql looks at the original request and finds the
