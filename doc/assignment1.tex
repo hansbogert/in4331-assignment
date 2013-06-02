@@ -269,5 +269,47 @@ return ($m//title, $m/year)
 \end{verbatim}
 
 \section{Project: Getting started}
+\section{Shakespeare application}
+The assignment was not clear on which collection should be used, there
+were 2 choices: (1) The 3 works of Shakespeare in the samples
+directory actually \emph{shipped} with the eXist-db, or (2) the
+application downloadable by the package manager in eXist-db, we chose
+the former.  Some parts we're reused from the samples directory,
+namely the xsl file.
 
+The application is built using the application-framework of eXist-db
+much like the Shakespeare application demo, although we've chosen to
+use xslt to do most of the transformations instead of using xquery.
+
+The following lists depicts the step taken from a request to the
+exist-db by the exist-db to render the page.
+\begin{enumerate}
+\item The controller.xql receives the URL request and routes it
+  accordingly - usually to view.xql
+\item the view.xql looks at the original request and finds the
+  appropriate html file, like index.html, view-play.html etc.
+\item The view.xql then parses this HTML-snippet to find directives on
+  where it should be placed in another template HTML file -- located
+  in the templates/ directory of the application.
+\item The combined HTML is then parsed for directives again for calls
+  to the app.xql and places the result in the HTML element calling the
+  xquery function.
+\item In our case the app.xql will call a transformation function with
+  the appropriate stylesheet and return the output into the HTML view.
+\end{enumerate}
+\paragraph{Notes}
+There were ambiguous or vague matters in the assignment, which
+collection to use was already addressed in the beginning of this
+section, but there were x more issues: (1) What is meant by a
+character's \emph{part} for a given scene/act was not defined. Nowhere
+in the XML-files is a character's part described in any other way than
+just his/her lines -- though it seemed odd to list those, so we have
+chosen to show the character's activity percentage, defined by the
+number of lines divided by the total amount of lines in that act/scene.
+
+Another (2) issue is that it is unclear where in the XML-files the
+\emph{stage's requirements} are defined. (This holds for both the
+types of Shakespeare collections referred to in the beginning of this
+section.) For now we have listed all the stage directions, which do
+include the items and such.
 \end{document}
