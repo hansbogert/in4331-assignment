@@ -76,7 +76,8 @@ The following query gets the current date, extracts the year, substracts 5 years
 \subsection{What was the role of Clint Eastwood in Unforgiven?}
 \subsubsection{movies.xml}
 \begin{verbatim}
-//movie[title='Unforgiven']/actor[first_name = 'Clint' and last_name = 'Eastwood']/role
+//movie[title='Unforgiven']
+	/actor[first_name='Clint' and last_name='Eastwood']/role
 \end{verbatim}
 \subsubsection{movies\_refs.xml}
 \begin{verbatim}
@@ -112,160 +113,131 @@ Restricted to uppercase "V", the query for both data-sets:
 \section{XQuery assignments}
 For all queries these lines are implicit:
 \begin{verbatim}
-let $ms:=doc("movies-query/movies\_alone.xml"),
-$as:=doc("movies-query/artists\_alone.xml")
-\end{verbatim}
-\subsection{List the movies published after 2002, including their
-  title and year}
-As the assignment was not clear on desired output, we've done our best,
-
-\begin{verbatim}
-for $m in $ms/movies/movie 
-where year > 2002 
-return (concat($m/title/text(),"",$m/year/text()))
+let $ms:=doc("movies-query/movies_alone.xml"),
+		$as:=doc("movies-query/artists_alone.xml")
 \end{verbatim}
 
-\subsection{Create a flat list of all the title-role pairs, with each
-  pair enclosed in a “result” element. Here is an example of the
-  expected result structure:...}
+\subsection{List the movies published after 2002, including their title and year}
+The assignment was not entirely clear on the expected output, so it's just a string.
 \begin{verbatim}
-<results>{    
-let $ms:=doc("movies-query/movies\_alone.xml"),                                                                                           
-$as:=doc("movies-query/artists\_alone.xml")
+for $m in $ms/movies/movie
+where year > 2002
+return concat($m/title/text(), ', ', $m/year/text())
+\end{verbatim}
 
+\subsection{Create a flat list of all the title-role pairs, with each pair enclosed in a \emph{result}� element. Here is an example of the expected result structure:...}
+\begin{verbatim}
+<results>
+{
     for $role in $ms/movies/movie/actor/@role
-
     return <result>
-            <title>{
-                $role/../../title/string()
-            }</title>
-            <role>{
-                $role/string()
-            }
-            </role>
-        </result>
+    	{$role/../../title}
+    	<role>{$role/string()}</role>
+    	</result>
 }
 </results>
 \end{verbatim}
-\subsection{ Give the title of movies where the director is also one
-  of the actors.}
-\begin{verbatim}
-for $a in $ms//movie
-where $a/director/@id = $a/actor/@id
-return $a/title
-\end{verbatim}
-\subsection{ Show the movies, grouped by genre. Hint: function
-  distinct-values() removes the duplicates from a sequence. It returns
-  atomic values.}
-The requested format is unclear, we opted for a list of tuples with
-the return type ($genre, $corresponding-movie-title )
-\begin{verbatim}
-let $ms:=doc("movies-query/movies\_alone.xml"),                                                                                           
-$as:=doc("movies-query/artists\_alone.xml")
 
-for $g in distinct-values($ms//genre)
-return ($g,$ms//movie[genre= $g]/title)
-\end{verbatim}
-
-\subsection{ For each distinct actor's id in movies\_alone.xml, show
-  the titles of the movies where this actor plays a role. The format
-  of the result should be:...}
-\begin{verbatim}
-for $id in distinct-values($ms//actor/@id/string())
-return  <actor>{$id},{
-    for $m in $ms//movie[actor/@id/string() = $id]
-    return $m/title
-}
-</actor>
-\end{verbatim}
-
-\subsubsection{variant:}
-The variant asks only for the nodes/actors which at least appear in 2
-movies, we can do so by capturing all the nodes, but before outputting
-we filter -- using the provided hint -- with the \emph{count()}
-function.
-
-\begin{verbatim}
-let $acs := for $id in distinct-values($ms//actor/@id/string())
-return  <actor>{$id},{
-    for $m in $ms//movie[actor/@id/string() = $id]
-    return $m/title
-}
-</actor>
-
-return $acs[count(title) = 2]
-\end{verbatim}
-\subsection{ Give the title of each movie, along with the name of its
-  director. Note: this is a join!}
-The result is a tuple of the movie title and the director's name.
+\subsection{ Give the title of movies where the director is also one of the actors.}
 \begin{verbatim}
 for $m in $ms//movie
-,   $a in $as//artist
-where $m/director/@id = $a/@id  
-return ($m/title/text(), concat($a/first_name, " ",$a/last_name))
+where director/@id = actor/@id
+return $m/title
 \end{verbatim}
-\subsection{ Give the title of each movie, and a nested element
-  <actors> giving the list of actors with their role.  }
 
-Again the desired output is very ambiguous and left open for
-interpretation, we read it as: (1) sequence the titles as elements, in
-these titles include (nest) an extra element actors which has actor
-elements existing of the actors with their real name, while having a
-role attribute.
+\subsection{ Show the movies, grouped by genre. Hint: function distinct-values() removes the duplicates from a sequence. It returns atomic values.}
+The requested format is unclear, we opted for a list of tuples with the return type (genre, corresponding movie title)
+\begin{verbatim}
+for $g in distinct-values($ms//genre)
+return ($g,$ms//movie[genre=$g]/title)
+\end{verbatim}
+Alternatively, \texttt{group by} could be used:
+\begin{verbatim}
+for $m in $ms//movie
+let $g := $m/genre
+group by $g
+return ($g, $m/title)
+\end{verbatim}
 
+\subsection{For each distinct actor's id in movies\_alone.xml, show the titles of the movies where this actor plays a role. The format of the result should be:...}
+\begin{verbatim}
+for $id in distinct-values($ms//actor/@id)
+let $movies := $ms//movie[actor/@id=$id]
+return <actor>{$id, $movies/title} </actor>
+\end{verbatim}
+
+\subsubsection{Variant}
+The variant asks only for the nodes/actors which appear in at least 2 movies. This can be achieved by adding a \texttt{where} clause to the query:
+\begin{verbatim}
+for $id in distinct-values($ms//actor/@id)
+let $movies := $ms//movie[actor/@id=$id]
+where count($movies) > 1
+return <actor>{$id, $movies/title} </actor>
+\end{verbatim}
+
+\subsection{Give the title of each movie, along with the name of its director. Note: this is a join!}
+The result is a concatenation of the movie title and the director's name.
+\begin{verbatim}
+for $m in $ms//movie, $a in $as//artist
+where $m/director/@id = $a/@id
+return concat($m/title, ": ", $a/last_name, ', ', $a/first_name)
+\end{verbatim}
+
+\subsection{Give the title of each movie, and a nested element <actors> giving the list of actors with their role.}
+Again the desired output is very ambiguous and left open for interpretation, we read it as: (1) sequence the titles as elements, in these titles include (nest) an extra element actors which contains elements for the actor's name and role.
+\begin{verbatim}
+for $m in $ms//movie
+let $actors := $as//artist[@id = $m/actor/@id]
+return <title>{$m/title/text()}<actors>{
+    for $a in $actors
+    let $role := $m/actor[@id=$a/@id]/@role/string()
+    return <actor>
+        <name>{concat($a/first_name, " ", $a/last_name)}</name>
+        <role>{$role}</role>
+        </actor>
+}</actors></title>
+\end{verbatim}
+Another interpretation would be to have the role as an attribute:
 \begin{verbatim}
 for $m in $ms//movie return 
-<title>{                                                                                                                  
-    $m//title/text()} <actors>
-    {for $ac in $m/actor
-    , $ar in $as//artist 
-    where $ac/@id = $ar/@id 
+<title>{$m//title/text()}
+    <actors>
+    {for $ac in $m/actor, $ar in $as//artist
+    where $ac/@id = $ar/@id
     return 
-        <actor role="{$ac/@role/string()}''>                                                                                                                          
-            {$ar/first_name/text()}\&#032;{$ar/last_name/text()}         
-        </actor>} 
+        <actor role="{$ac/@role/string()}">                                   
+            {$ar/first_name/text()}\&#032;{$ar/last_name/text()}
+        </actor>}
     </actors>
 </title>
-
-\end{verbatim}
-\subsection{ For each movie that has at least two actors, list the
-  title and first two actors, and an empty "et-al" element if the
-  movie has additional actors. For instance: }
-\begin{verbatim}
-<results>{
-    let $ms:=doc("movies-query/movies\_alone.xml")
-    , $as:=doc("movies-query/artists\_alone.xml")
-    
-    for $m in $ms//movie
-    return
-    <result>
-        <title>
-            {$m//title/text()}             
-        </title>
-        {for $ac in subsequence($m/actor, 1,2)
-        , $ar in $as//artist 
-        where $ac/@id = $ar/@id 
-        return 
-        <actor>                                                                                                                          
-            {$ar/first_name/text()}\&#032;{$ar/last_name/text()} as  {$ac/@role/string()}
-        </actor>}
-        {if(count($m/actor) > 2 ) then <et-al/> else ""}
-    </result>
-}</results>
 \end{verbatim}
 
-\subsection{ List the titles and years of all movies directed by Clint
-  Eastwood after 1990, in alphabetic order.  }
-
-We've chosen to result the titles and years as list of tuples ($title, $year)
+\subsection{ For each movie that has at least two actors, list the title and first two actors, and an empty "et-al" element if the movie has additional actors. For instance: (...)}
 \begin{verbatim}
-let $eastwoodId := $as//artist[last_name = "Eastwood"]/@id
-
 for $m in $ms//movie
-where $m//director/@id/string() = $eastwoodId/string()
-and $m/year > 1990
-order by $m/title
-return ($m//title, $m/year)
+let $actors := $as//artist[@id = $m/actor/@id]
+where count($actors) >= 2
+return 
+		<result>{
+			$m/title,
+	    for $a in subsequence($actors, 1, 2)
+	    let $role := $m/actor[@id=$a/@id]/@role/string()
+	    return
+	    	<actor>
+	    		{concat($a/first_name, ' ', $a/last_name), ' as ', $role}
+	    	</actor>,
+	    if (count($actors) > 2) then <et-al/> else ''}
+    </result>
+\end{verbatim}
+
+\subsection{List the titles and years of all movies directed by Clint Eastwood after 1990, in alphabetic order.}
+The output is a \emph{result} element, containing the title and year as nested elements.
+\begin{verbatim}
+let $eastwoodId := $as//artist[last_name="Eastwood"]/@id/string()
+for $m in $ms//movie
+where $m/director/@id/string() = $eastwoodId and $m/year > 1990
+order by $m/title ascending
+return <result>{$m/title, $m/year}</result>
 \end{verbatim}
 
 \section{Project: Getting started}
