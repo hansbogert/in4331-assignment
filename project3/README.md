@@ -1,0 +1,2 @@
+# MusicXML online
+To run the application, place the files from the music_xml directory in a collection called 'music' on eXist, along with query.xq. Place the contents of web_app on a web server capable of running PHP, and set the references to the eXist server in application/controllers/welcome.php.
