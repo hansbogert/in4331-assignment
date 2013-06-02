@@ -1,6 +1,7 @@
 \documentclass{article}
 \usepackage{a4wide}
-\setlength{\parindent}{0pt}
+\usepackage{hyperref}
+%\setlength{\parindent}{0pt}
 \title{Web Data Management, assignment 1}
 \author{Hans van den Bogert\\(studienummer) \and Bastiaan van Graafeiland\\1399101}
 \begin{document}
@@ -284,4 +285,53 @@ Another (2) issue is that it is unclear where in the XML-files the
 types of Shakespeare collections referred to in the beginning of this
 section.) For now we have listed all the stage directions, which do
 include the items and such.
+
+\section{MusicXML online}
+The book leaves a lot of the requirements for this project quite open. In the end, we decided to create a web application that allows the user to enter one word as a search term.
+
+\subsection{Resulting work}
+The code relevant to this application can be found in the following files:
+\begin{itemize}
+	\item \texttt{query.xq}
+	\item \texttt{application/controllers/welcome.php}
+	\item \texttt{application/views/search\_page.php}
+\end{itemize}
+The music is stored in the music-xml folder. Furthermore we used Twitter Bootstrap for the stylesheets, and CodeIgniter as PHP framework.
+
+\subsection{The application}
+The application consists of two parts: the Exist-db server, where the XML files are stored, as well as an XQuery file. This file contains the logic for searching the music database. The search results are returned as \emph{result} elements, where the title of the piece, the composer, and the URI of the XML file are nested. The query works as follows: in each file of the collection (\emph{score-partwise} element), the \emph{movement-title, creator}, and \emph{credit-words} elements are checked for the query word. If the word is contained in any of these elements, the piece is considered a match.
+
+The other part is the web application itself, written in PHP using the CodeIgniter MVC framework. On the search page, a form is displayed where the search term can be entered. All music sheets containing this word in their metadata are returned, and the user can then download PDF or MIDI versions of the music. This works as follows: upon clicking a search result (PDF or MIDI), the Exist server is queried for the corresponding XML file. This file is then converted to a Lilypond file, which is in turn converted to PDF and MIDI. This is done only once per file, so subsequent downloads can be provided immediately without waiting for the conversion process.
+
+In short, the following steps are taken when searching for and downloading a music sheet.
+\begin{enumerate}
+	\item The user enters a search term and clicks on Search
+	\item The web app delegates the search term to the XQuery file on the Exist database
+	\item Using XQuery, different child elements of each piece are searched for a match
+	\item The search results are obtained by the web app as an XML file, which is then parsed
+	\item Using said XML file, a list of search results is generated along with links to PDF and MIDI versions
+	\item The user clicks the PDF/MIDI link of a search result
+	\item The web app checks whether the requested file already exists, if so, it is returned immediately
+	\item Else, the MusicXML file for the requested piece is retrieved from the Exist server
+	\item Using Lilypond, the file is converted to both PDF and MIDI (-m flag with \texttt{musicxml2ly})
+	\item The requested file is presented to the user
+\end{enumerate}
+
+\subsection{Issues}
+Although MusicXML is a standard format designed to work with lots of different software, the exact details can still differ significantly. For instance, some of the resulting XML files did not contain any \emph{composer} or \emph{movement-title} nodes, but the composer and title were stored in \emph{credit-words} elements. If a system akin to this one is to be used in practice, consistency among different MusicXML files is required. The \emph{credit-words} elements are not quite suitable, because they often do not contain any information regarding the semantics of their content (in some cases, they have a \emph{credit-type} sibling element though).
+
+Furthermore, lyrics in music are quite hard to perform a search on, because the words are split up in the XML file; often only syllables are stored in a single element, because this way they can each be put under the correct note in the sheet music.
+
+\subsection{Future work}
+It would be nice to be able to search in lyrics. To this end, all the lyric elements could be concatenated, then split up into proper sentences using other software.
+
+Entering your own music was mentioned in the assignment, however, we see no need for this. There are already plenty of evolved software packages out there which have been developed for this. Most of these can export sheets to the MusicXML format as well, so own input would mean reinventing the wheel.
+
+Other search methods were too complex to implement, such as whistling a song into the microphone. This is a good idea, but we believe it is beyond the scope of this exercise.
+
+In general, to implement more advanced features, the MusicXML files should be studied more in depth.
+
+\subsection{Music sources}
+Most of the MusicXML sources were obtained by exporting sheets from \href{http://www.ninsheetm.us}{NinSheetMusic}, furthermore we used \href{http://www.musescore.com}{MuseScore} and \href{http://www.openmusicscore.org}{Open Music Score}.
+
 \end{document}
