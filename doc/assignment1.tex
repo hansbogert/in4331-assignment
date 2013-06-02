@@ -184,7 +184,7 @@ where $m/director/@id = $a/@id
 return concat($m/title, ": ", $a/last_name, ', ', $a/first_name)
 \end{verbatim}
 
-\subsection{Give the title of each movie, and a nested element <actors> giving the list of actors with their role.}
+\subsection{Give the title of each movie, and a nested element $<$actors$>$ giving the list of actors with their role.}
 Again the desired output is very ambiguous and left open for interpretation, we read it as: (1) sequence the titles as elements, in these titles include (nest) an extra element actors which contains elements for the actor's name and role.
 \begin{verbatim}
 for $m in $ms//movie
@@ -295,7 +295,7 @@ exist-db by the exist-db to render the page.
 \paragraph{Notes}
 There were ambiguous or vague matters in the assignment, which
 collection to use was already addressed in the beginning of this
-section, but there were x more issues: (1) What is meant by a
+section, but there were 2 more issues: (1) What is meant by a
 character's \emph{part} for a given scene/act was not defined. Nowhere
 in the XML-files is a character's part described in any other way than
 just his/her lines -- though it seemed odd to list those, we do so,
