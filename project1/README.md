@@ -10,4 +10,4 @@ The data is fetched through jquery with a call to ba-simple-proxy.php
 ## Setup
 Copy the collection 'movies-query' into exist db, and correspondingly 
 alter the javascript code if you choose to take another name. Make sure 
-that in the code the ports are also correct.
+that in the code the proxy URLs are also correct.
