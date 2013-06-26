@@ -1,4 +1,4 @@
-= Hadoop assignment
+# Hadoop assignment 
 
 You can run the work environment with [Vagrant](http://www.vagrantup.com/)
 
