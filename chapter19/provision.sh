@@ -1,4 +1,5 @@
 #!/bin/bash
+JAVA_PACKAGE=openjdk-7-jre-headless
 
 ## download resources for assignment
 cd /vagrant/res; bash download-resources.sh
@@ -23,3 +24,10 @@ then
 
 fi
 
+## download java
+dpkg --status $JAVA_PACKAGE
+if [ $? = 1  ]
+then
+	sudo aptitude update
+	sudo aptitude install -y $JAVA_PACKAGE
+fi
