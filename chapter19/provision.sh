@@ -29,10 +29,6 @@ then
   </property>
 </configuration>
 EOF
-        sudo su hdfs -c 'hadoop namenode -format'
-	sudo invoke-rc.d hadoop-namenode start
-	sudo invoke-rc.d hadoop-datanode start
-        
 fi
 
 ## download java
@@ -42,3 +38,10 @@ then
 	sudo aptitude update
 	sudo aptitude install -y $JAVA_PACKAGE
 fi
+
+
+## format and start
+sudo su hdfs -c 'hadoop namenode -format'
+sudo invoke-rc.d hadoop-namenode start
+sudo invoke-rc.d hadoop-datanode start
+        
