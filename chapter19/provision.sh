@@ -1,6 +1,6 @@
 #!/bin/bash
 JAVA_PACKAGE=openjdk-7-jre-headless
-
+echo `whoami`
 ## download resources for assignment
 cd /vagrant/res; bash download-resources.sh
 
@@ -44,4 +44,5 @@ fi
 sudo su hdfs -c 'hadoop namenode -format'
 sudo invoke-rc.d hadoop-namenode start
 sudo invoke-rc.d hadoop-datanode start
-        
+sudo chown root:hadoop /var/log/hadoop/root
+sudo chmod 775 /var/log/hadoop/root
