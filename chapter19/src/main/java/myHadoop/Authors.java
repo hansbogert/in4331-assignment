@@ -22,7 +22,7 @@ public class Authors {
 	public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 	    /* Open a Java scanner object to parse the line */
 	    Scanner line = new Scanner(value.toString()); line.useDelimiter("\t"); author.set(line.next()); context.write(author, one);
-	} 
+	}
     }
     /**
      * The Reducer class -- receives pairs (author name, <list of counts>)
@@ -38,9 +38,9 @@ public class Authors {
 	    int count = 0;
 	    for (IntWritable val : values) {
 		count += val.get();
-		result.set(count);
-		context.write(key, result);
-	    }
-	} 
+            }
+	    result.set(count);
+	    context.write(key, result);
+	}
     }
 }
