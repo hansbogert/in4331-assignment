@@ -10,8 +10,8 @@ cd /vagrant/res; bash download-resources.sh
 cd
 
 # check if hadoop is already installed
-notInstalled=`dpkg --status hadoop |grep not-installed |wc -l`
-if [ $notInstalled = 1 ]
+aptitude show hadoop > /dev/null
+if [ $? = 255 ]
 then
 	if [ ! -f hadoop_1.1.2-1_i386.deb ]
 	then
