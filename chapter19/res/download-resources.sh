@@ -34,3 +34,8 @@ then
 	download http://webdam.inria.fr/Jorge/files/proceedings-medium.txt
 fi
 
+if [ ! -f movies.xml ]
+then
+	download http://webdam.inria.fr/Jorge/files/movies.xml
+fi
+
