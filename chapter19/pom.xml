@@ -6,12 +6,12 @@
   <groupId>myHadoop</groupId>
   <artifactId>chapter19</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
-  <name>Maven Quick Start Archetype</name>
+  <version>1</version>
+  <name>wdm</name>
   <url>http://maven.apache.org</url>
   <properties>
-    <maven.compiler.source>1.5</maven.compiler.source>
-    <maven.compiler.target>1.5</maven.compiler.target>
+    <maven.compiler.source>1.6</maven.compiler.source>
+    <maven.compiler.target>1.6</maven.compiler.target>
   </properties>
 
   <dependencies>
@@ -22,9 +22,14 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-	<groupId>org.apache.hadoop</groupId>
-	<artifactId>hadoop-core</artifactId>
-	<version>1.1.2</version>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-core</artifactId>
+      <version>1.1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>jdom</groupId>
+      <artifactId>jdom</artifactId>
+      <version>1.1</version>
     </dependency>
   </dependencies>
 </project>
