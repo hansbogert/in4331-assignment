@@ -12,66 +12,57 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-/**
- *
- * @author root
- */
 public class ParserDriver {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-	try {
-	    runJob(args[0], args[1]);
+	public static void main(String[] args) {
+		try {
+			runJob(args[0], args[1]);
 
-	} catch (IOException ex) {
-	    Logger.getLogger(ParserDriver.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (IOException ex) {
+			Logger.getLogger(ParserDriver.class.getName()).log(Level.SEVERE,
+					null, ex);
+		}
+
 	}
 
-    }
+	public static void runJob(String input, String output) throws IOException {
 
+		Configuration conf = new Configuration();
 
-    public static void runJob(String input,
-			      String output ) throws IOException {
+		conf.set("xmlinput.start", "<movie>");
+		conf.set("xmlinput.end", "</movie>");
+		conf.set(
+				"io.serializations",
+				"org.apache.hadoop.io.serializer.JavaSerialization,org.apache.hadoop.io.serializer.WritableSerialization");
 
-	Configuration conf = new Configuration();
+		Job job = new Job(conf, "jobName");
 
-	conf.set("xmlinput.start", "<movie>");
-	conf.set("xmlinput.end", "</movie>");
-	conf
-	    .set(
-		 "io.serializations",
-		 "org.apache.hadoop.io.serializer.JavaSerialization,org.apache.hadoop.io.serializer.WritableSerialization");
+		FileInputFormat.setInputPaths(job, input);
+		job.setJarByClass(ParserDriver.class);
+		job.setMapperClass(MoviesTitleActorMapper.class);
+		job.setNumReduceTasks(0);
+		job.setInputFormatClass(XMLInputFormat.class);
+		job.setOutputKeyClass(NullWritable.class);
+		job.setOutputValueClass(Text.class);
+		Path outPath = new Path(output);
+		FileOutputFormat.setOutputPath(job, outPath);
+		FileSystem dfs = FileSystem.get(outPath.toUri(), conf);
+		if (dfs.exists(outPath)) {
+			dfs.delete(outPath, true);
+		}
 
-	Job job = new Job(conf, "jobName");
+		try {
 
+			job.waitForCompletion(true);
 
-	FileInputFormat.setInputPaths(job, input);
-	job.setJarByClass(ParserDriver.class);
-	job.setMapperClass(MyParserMapper.class);
-	job.setNumReduceTasks(0);
-	job.setInputFormatClass(XMLInputFormat.class);
-	job.setOutputKeyClass(NullWritable.class);
-	job.setOutputValueClass(Text.class);
-	Path outPath = new Path(output);
-	FileOutputFormat.setOutputPath(job, outPath);
-	FileSystem dfs = FileSystem.get(outPath.toUri(), conf);
-	if (dfs.exists(outPath)) {
-	    dfs.delete(outPath, true);
+		} catch (InterruptedException ex) {
+			Logger.getLogger(ParserDriver.class.getName()).log(Level.SEVERE,
+					null, ex);
+		} catch (ClassNotFoundException ex) {
+			Logger.getLogger(ParserDriver.class.getName()).log(Level.SEVERE,
+					null, ex);
+		}
+
 	}
-
-
-	try {
-
-	    job.waitForCompletion(true);
-
-	} catch (InterruptedException ex) {
-	    Logger.getLogger(ParserDriver.class.getName()).log(Level.SEVERE, null, ex);
-	} catch (ClassNotFoundException ex) {
-	    Logger.getLogger(ParserDriver.class.getName()).log(Level.SEVERE, null, ex);
-	}
-
-    }
 
 }
