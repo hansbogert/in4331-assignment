@@ -19,6 +19,7 @@ cd
 
 # check if hadoop is already installed
 if [ -f /etc/hadoop/mapred-site.xml ]
+then
     mkdir /etc/hadoop
     sudo sed -i -e 's/\(export JAVA_HOME=\).*/\1\/usr\/lib\/jvm\/java-6-openjdk-i386/' /etc/hadoop/hadoop-env.sh 
     cat << 'EOF' | sudo tee /etc/hadoop/core-site.xml

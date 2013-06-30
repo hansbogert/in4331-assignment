@@ -52,4 +52,12 @@ found in the \texttt{res} directory.
 Maven is best used to execute the jobs. Run \texttt{maven package},
 then \texttt{mvn exec:java -Dexec.mainClass="\{class to use\}" -Dexec.args="\{required arguments\}"}.
 
+As a convenience, a \texttt{Vagrantfile} has been added which can be
+used with the \url{vagrantup.com} framework for starting Virtual Machines
+locally to be used as a build platform. 
+
+Once the VM is started with \texttt{\$ vagrant up} (you will have to
+install both \emph{Vagrant} and \emph{Virtualbox}) you can then login
+to the machine with \texttt{\$ vagrant ssh} and afterwards \texttt{\$
+  cd /vagrant} to access the code base from within the virtual machine 
 \end{document}
