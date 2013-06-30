@@ -1,0 +1,30 @@
+\documentclass{article}
+\usepackage{a4wide}
+\usepackage{hyperref}
+%\setlength{\parindent}{0pt}
+\title{Web Data Management, assignment 2}
+\author{Hans van den Bogert\\1307983 \and Bastiaan van Graafeiland\\1399101}
+\begin{document}
+\maketitle
+
+\section{Introduction}
+This document describes the choices made for assignment 2 which in our
+case was chapter 19 from: "Web Data Management" by Serge
+Abiteboul et al.
+
+\section{Exercise 19.5.1 }
+For this exercise we basically copied the source-code from the example
+(as was implied by the exercise) and added the combiner function of
+\texttt{Authors.CountReducer}.
+
+\section{Exercise 19.5.2}
+Normally hadoop by default works on a granularity of lines for the
+mappers. In the case of XML-data this does not work. Fortunately a lot
+of other persons have already solved this by using hadoops extensible
+\texttt{InputFormat}. In particular we used the class
+\texttt{XMLInputFormat} from the \emph{Cloud9} hadoop toolkit, which
+only needed minor alterations to work in our setting. Now by using
+this input formatter, the mappers work on the granularity of enclosing
+\texttt{movie} tags. 
+
+\end{document}
