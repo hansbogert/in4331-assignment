@@ -50,7 +50,6 @@ public class MoviesTitleActorMapper extends
 				value = title + "\t" + name + "\t" + birthyear + "\t" + role;
 
 				context.write(NullWritable.get(), new Text(value));
-				System.out.println(value);
 			}
 			
 			
