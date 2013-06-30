@@ -14,17 +14,42 @@ Abiteboul et al.
 
 \section{Exercise 19.5.1 }
 For this exercise we basically copied the source-code from the example
-(as was implied by the exercise) and added the combiner function of
-\texttt{Authors.CountReducer}.
+(as was implied by the exercise) and added the \texttt{Authors.CountReducer}
+class as the combiner. This works fine because the counting of author names is associative
+and commutative.
 
 \section{Exercise 19.5.2}
 Normally hadoop by default works on a granularity of lines for the
 mappers. In the case of XML-data this does not work. Fortunately a lot
-of other persons have already solved this by using hadoops extensible
+of other people have already solved this by using Hadoops extensible
 \texttt{InputFormat}. In particular we used the class
-\texttt{XMLInputFormat} from the \emph{Cloud9} hadoop toolkit, which
+\texttt{XMLInputFormat} from the \emph{Cloud9} Hadoop toolkit, which
 only needed minor alterations to work in our setting. Now by using
 this input formatter, the mappers work on the granularity of enclosing
-\texttt{movie} tags. 
+\texttt{movie} tags.
+
+\section{Exercise 19.5.3}
+For each query, we created a separate Pig script file. These can be found in \texttt{src/main/pig}.
+
+\section{Exercise 19.5.4}
+The inverted file is built using a single MapReduce job:
+\texttt{InverseDocument.java}. The input needs to be a collection
+of plain text files representing the documents. The output is then in the format of
+\texttt{term (tab) total\_tf:(number); idf:(idf value); filename1:(number of occurrences in filename1); filename2: ...}.
+
+For building the index, no stop words are used (every word counts). In addition, we convert each word to lower case
+and strip it of any punctuation or quotes.
+
+We also used a separate Combiner for this job, because the output of the Reducer is different than that of the Mapper.
+
+We use the raw term frequency per document, and the default calculation of idf:
+$$ \mathrm{idf}(t, D) = \log \frac{|D|}{|\{d \in D: t \in d\}|} $$
+
+\section{Running the code}
+To download the necessary resources, execute \texttt{download-resources.sh}, which can be
+found in the \texttt{res} directory.
+
+Maven is best used to execute the jobs. Run \texttt{maven package},
+then \texttt{mvn exec:java -Dexec.mainClass="\{class to use\}" -Dexec.args="\{required arguments\}"}.
 
 \end{document}
