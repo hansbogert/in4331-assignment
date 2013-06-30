@@ -4,15 +4,15 @@ function download
 	wget $1
 }
 
-if [ ! -f dblp.dtd ]
-then
-	download http://dblp.uni-trier.de/xml/dblp.dtd
-fi
+#if [ ! -f dblp.dtd ]
+#then
+#	download http://dblp.uni-trier.de/xml/dblp.dtd
+#fi
 
-if [ ! -f dblp.xml ] && [ ! -f dblp.xml.gz ]
-then
-	download http://dblp.uni-trier.de/xml/dblp.xml.gz && gunzip dblp.xml.gz
-fi
+#if [ ! -f dblp.xml ] && [ ! -f dblp.xml.gz ]
+#then
+#	download http://dblp.uni-trier.de/xml/dblp.xml.gz && gunzip dblp.xml.gz
+#fi
 
 if [ ! -f author-small.txt ]
 then
