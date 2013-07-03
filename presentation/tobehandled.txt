@@ -1,0 +1,35 @@
+= Assignment 1 (Chapter 5)
+== Minimal Web application 
+=== Mimic real life by  assuming the database was 3rd party
+==== Propose jquery icw xquery
+==== Problems: same origin policy
+==== Solution: proxy script 
+
+Of course we were not the only ones with this problem, there are proxy
+scripts which handle this, they generally work by being called by the
+frontend and proxy the request to the 3rd party -- in this case the Exist-DB
+
+=== Pretty dull, bootstrap to the rescue.
+
+== Shakespeare Opera Omnia
+=== Re-use of provided material
+==== XSL reuse.
+==== Use the Exist framework 
+
+Normally the framework exists out of the following components:
+* templating
+* .. 
+
+We have added an extra step by using XSL, instead of doing this ``by
+hand'' in xquery. 
+
+==  MusicXML on line
+
+= Assignment 2 (Chapter 19)
+== Setup
+=== Maven to the rescue.
+=== For more elaborate setups, use vagrant and Puppet.
+== Exercise 1
+== Exercise 2
+== Exercise 3
+== Exercise 4
