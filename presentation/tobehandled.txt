@@ -32,7 +32,10 @@ hand'' in xquery.
 
 ===  MusicXML on line
 
-...
+* Web app forwards the query to the eXist db
+* XML file with search results is returned and displayed on the site
+* Upon clicking a result, the MusicXML file is downloaded and converted to PDF and MIDI using Lilypond
+* Issue: MusicXML files not consistent
 
 == Assignment 2 (Chapter 19)
 
@@ -40,11 +43,15 @@ hand'' in xquery.
 
 === Setup
 
-...
+* Hadoop
+* Pig
+* Resources
+* Code
 
 ==== Maven to the rescue.
 
-...
+* mvn package
+* mvn exec:java -Dexec.mainClass="Class" -Dexec.args="input output"
 
 ==== For more elaborate setups, use vagrant and Puppet.
 
@@ -59,8 +66,14 @@ hand'' in xquery.
 
 === Exercise 3
 
-...
+* Pig queries (niet zoveel over te zeggen?)
 
 === Exercise 4
 
-...
+* <K,V> in mapper is <file,content>
+* Words are put to lowercase and stripped of punctuation, stopwords are not considered
+* Output of the form <word,filename:1> for each word
+* Combiner adds up occurrences of words within the same file and returns them in the same format as mapper
+* HashMap is used to track counts per document for a word
+* Reducer extends combiner (parses the same way), but yields a different output format, including tf and idf
+* Issue: total number of docs required for idf calculation - solved by storing number of documents in configuration at runtime
